@@ -1,0 +1,140 @@
+
+SMART DEVICE MANAGER 
+Node.js + Express + MongoDB + MQTT + WebSocket Integration with ESP32
+
+═══════════════════════════════════════════════════════════════════════
+📂 FILE STRUCTURE (34 files, 10 directories)
+═══════════════════════════════════════════════════════════════════════
+
+📦 ROOT FILES:
+├── package.json          → Dependencies & npm scripts
+├── .env                  → Environment configuration
+├── .env.example          → Environment template
+├── .gitignore            → Git ignore rules
+├── README.md             → Full documentation
+├── index.html            → Main dashboard (SPA)
+└── login.html            → Authentication page
+
+📁 server/
+├── server.js             → Express app entry point
+│
+├── config/
+│   ├── database.js       → MongoDB connection setup
+│   ├── mqtt.js           → MQTT broker client (ESP32 ready)
+│   └── websocket.js      → WebSocket real-time server
+│
+├── models/ (Mongoose Schemas)
+│   ├── Device.js         → IoT device schema (ESP32 optimized)
+│   ├── User.js           → User schema with bcrypt
+│   ├── Telemetry.js      → Sensor data with TTL (90 days)
+│   ├── Command.js        → Command queue with retry logic
+│   └── Alert.js          → Alert/notification schema
+│
+├── controllers/
+│   ├── authController.js     → JWT auth (register/login/me)
+│   ├── userController.js       → User CRUD + profile
+│   ├── deviceController.js     → Device CRUD + commands + stats
+│   ├── telemetryController.js  → Telemetry data handling
+│   └── commandController.js    → Command queue management
+│
+├── middleware/
+│   ├── auth.js           → JWT authentication & authorization
+│   ├── validate.js       → Express-validator input validation
+│   ├── errorHandler.js   → Centralized error handling
+│   └── logger.js         → Morgan HTTP logging
+│
+├── routes/
+│   ├── authRoutes.js     → /api/auth/* endpoints
+│   ├── userRoutes.js     → /api/users/* endpoints
+│   ├── deviceRoutes.js   → /api/devices/* endpoints
+│   ├── telemetryRoutes.js → /api/telemetry/* endpoints
+│   └── commandRoutes.js  → /api/commands/* endpoints
+│
+└── public/
+    ├── css/style.css     → Modern responsive dashboard styles
+    └── js/app.js         → Full SPA frontend application
+
+═══════════════════════════════════════════════════════════════════════
+🔑 KEY FEATURES
+═══════════════════════════════════════════════════════════════════════
+
+✅ Authentication:
+   • JWT token-based auth
+   • Role-based access (admin/user/viewer)
+   • Password hashing (bcrypt, salt 12)
+   • Rate limiting (100 req/15min)
+
+✅ Device Management:
+   • Full CRUD operations
+   • Device types: ESP32, ESP8266, Pi, Arduino, etc.
+   • Status tracking (online/offline/sleeping/error)
+   • Location with GPS coordinates
+   • Power & battery monitoring
+   • Sensor configuration & calibration
+
+✅ ESP32 Integration:
+   • MQTT auto-registration
+   • Real-time telemetry via MQTT topics
+   • Command sending via MQTT
+   • Firmware version tracking
+   • WiFi signal strength (RSSI)
+   • Deep sleep support
+
+✅ Real-time:
+   • WebSocket live updates
+   • MQTT bidirectional communication
+   • Dashboard auto-refresh
+
+✅ Telemetry:
+   • Temperature, humidity, pressure, light
+   • Power metrics (voltage, current, power)
+   • Air quality (CO2, PM2.5, PM10, VOC)
+   • Soil moisture & pH
+   • GPS tracking
+   • Auto-cleanup after 90 days (TTL)
+
+✅ Commands:
+   • 17 built-in commands
+   • Retry logic (max 3 retries)
+   • Priority levels (low/normal/high/critical)
+   • Status tracking (pending/sent/delivered/executed/failed)
+
+✅ Security:
+   • Helmet.js security headers
+   • CORS protection
+   • Input validation
+   • Error sanitization
+
+═══════════════════════════════════════════════════════════════════════
+🚀 QUICK START
+═══════════════════════════════════════════════════════════════════════
+
+1. npm install
+2. Configure .env (MongoDB URI, JWT secret)
+3. Start MongoDB
+4. Start MQTT Broker (for ESP32)
+5. npm run dev
+6. Open http://localhost:3000
+7. Register at /login
+
+═══════════════════════════════════════════════════════════════════════
+📡 API ENDPOINTS (25+ endpoints)
+═══════════════════════════════════════════════════════════════════════
+
+Auth:     POST /api/auth/register, /api/auth/login
+Devices:  GET/POST/PUT/DELETE /api/devices
+Commands: GET/POST /api/commands, /api/commands/:id/retry
+Telemetry: GET/POST /api/telemetry, /api/telemetry/stats/:id
+Users:    GET/PUT/DELETE /api/users (Admin only)
+Health:   GET /api/health
+
+═══════════════════════════════════════════════════════════════════════
+📶 MQTT TOPICS (ESP32)
+═══════════════════════════════════════════════════════════════════════
+
+esp32/devices/{deviceId}/register    → Device registration
+esp32/devices/{deviceId}/status      → Status updates
+esp32/telemetry/{deviceId}             → Sensor data
+esp32/commands/{deviceId}            → Incoming commands
+
+═══════════════════════════════════════════════════════════════════════

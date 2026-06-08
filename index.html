@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Device Manager - IoT Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-microchip"></i>
+                <h2>Smart IoT</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="devices">
+                    <i class="fas fa-server"></i>
+                    <span>Devices</span>
+                </a>
+                <a href="#" class="nav-item" data-page="telemetry">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Telemetry</span>
+                </a>
+                <a href="#" class="nav-item" data-page="commands">
+                    <i class="fas fa-terminal"></i>
+                    <span>Commands</span>
+                </a>
+                <a href="#" class="nav-item" data-page="alerts">
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts</span>
+                </a>
+                <a href="#" class="nav-item" data-page="map">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Device Map</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Loading...</span>
+                </div>
+                <button id="logoutBtn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="top-bar-actions">
+                    <button class="btn-refresh" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <div class="connection-status">
+                        <span class="status-dot" id="wsStatus"></span>
+                        <span id="wsStatusText">Connecting...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalDevices">0</h3>
+                            <p>Total Devices</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="onlineDevices">0</h3>
+                            <p>Online</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="offlineDevices">0</h3>
+                            <p>Offline</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="activeAlerts">0</h3>
+                            <p>Active Alerts</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-server"></i> Recent Devices</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="recentDevicesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Last Seen</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Device Types</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="deviceTypeChart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Devices Page -->
+            <div id="devices" class="page">
+                <div class="page-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="deviceSearch" placeholder="Search devices...">
+                    </div>
+                    <button class="btn-primary" id="addDeviceBtn">
+                        <i class="fas fa-plus"></i> Add Device
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="devicesTable">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAll"></th>
+                                        <th>Device</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Location</th>
+                                        <th>Last Seen</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="devicePagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telemetry Page -->
+            <div id="telemetry" class="page">
+                <div class="page-actions">
+                    <select id="telemetryDeviceSelect">
+                        <option value="">Select Device</option>
+                    </select>
+                    <select id="timeRange">
+                        <option value="1">Last 1 Hour</option>
+                        <option value="6">Last 6 Hours</option>
+                        <option value="24" selected>Last 24 Hours</option>
+                        <option value="168">Last 7 Days</option>
+                    </select>
+                </div>
+                <div class="telemetry-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-thermometer-half"></i> Temperature</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="tempChart" class="chart-container"></div>
+                            <div class="metric-value" id="currentTemp">--°C</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tint"></i> Humidity</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="humidityChart" class="chart-container"></div>
+                            <div class="metric-value" id="currentHumidity">--%</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Power</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="powerChart" class="chart-container"></div>
+                            <div class="metric-value" id="currentPower">--W</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-battery-three-quarters"></i> Battery</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="batteryChart" class="chart-container"></div>
+                            <div class="metric-value" id="currentBattery">--%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commands Page -->
+            <div id="commands" class="page">
+                <div class="page-actions">
+                    <select id="commandDeviceSelect">
+                        <option value="">Select Device</option>
+                    </select>
+                    <select id="commandSelect">
+                        <option value="">Select Command</option>
+                        <option value="reboot">Reboot</option>
+                        <option value="led_on">LED On</option>
+                        <option value="led_off">LED Off</option>
+                        <option value="led_blink">LED Blink</option>
+                        <option value="relay_on">Relay On</option>
+                        <option value="relay_off">Relay Off</option>
+                        <option value="get_status">Get Status</option>
+                        <option value="get_config">Get Config</option>
+                        <option value="sleep">Sleep Mode</option>
+                        <option value="wake">Wake Up</option>
+                    </select>
+                    <button class="btn-primary" id="sendCommandBtn">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-history"></i> Command History</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="commandsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Device</th>
+                                        <th>Command</th>
+                                        <th>Status</th>
+                                        <th>Sent At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Page -->
+            <div id="alerts" class="page">
+                <div class="page-actions">
+                    <div class="filter-buttons">
+                        <button class="btn-filter active" data-filter="all">All</button>
+                        <button class="btn-filter" data-filter="active">Active</button>
+                        <button class="btn-filter" data-filter="critical">Critical</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="alertsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Device</th>
+                                        <th>Type</th>
+                                        <th>Message</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Page -->
+            <div id="map" class="page">
+                <div class="card full-height">
+                    <div class="card-body">
+                        <div id="deviceMap" class="map-container">
+                            <div class="map-placeholder">
+                                <i class="fas fa-map"></i>
+                                <p>Device location map will be displayed here</p>
+                                <p class="hint">Devices with GPS coordinates will appear on the map</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div id="addDeviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Add New Device</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addDeviceForm">
+                    <div class="form-group">
+                        <label>Device ID *</label>
+                        <input type="text" name="deviceId" required placeholder="e.g., ESP32-001">
+                    </div>
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" name="name" required placeholder="e.g., Living Room Sensor">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="type">
+                            <option value="esp32">ESP32</option>
+                            <option value="esp8266">ESP8266</option>
+                            <option value="raspberry_pi">Raspberry Pi</option>
+                            <option value="arduino">Arduino</option>
+                            <option value="sensor">Sensor</option>
+                            <option value="actuator">Actuator</option>
+                            <option value="gateway">Gateway</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category">
+                            <option value="temperature">Temperature</option>
+                            <option value="humidity">Humidity</option>
+                            <option value="motion">Motion</option>
+                            <option value="light">Light</option>
+                            <option value="security">Security</option>
+                            <option value="energy">Energy</option>
+                            <option value="environment">Environment</option>
+                            <option value="home_automation">Home Automation</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" rows="3" placeholder="Device description..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Location Name</label>
+                        <input type="text" name="location.name" placeholder="e.g., Living Room">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Latitude</label>
+                            <input type="number" name="location.latitude" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitude</label>
+                            <input type="number" name="location.longitude" step="any">
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Add Device</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Device Detail Modal -->
+    <div id="deviceDetailModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> Device Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="deviceDetailContent">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
