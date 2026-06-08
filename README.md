@@ -146,5 +146,5 @@ npm start
 
 ## License
 
-This project is developed for educational and research purposes only.
+This project is developed for educational and research purposes only. 
 All Rights Reserved.
