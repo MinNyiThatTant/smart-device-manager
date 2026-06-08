@@ -1,7 +1,4 @@
-# Smart IoT Device Manager
-
-Smart IoT Device Manager platform built with **Node.js**, **Express**, and **MongoDB**. 
-Integrating with **ESP32** and other IoT devices via **MQTT** and **WebSocket** protocols.
+# Smart IoT Device Manager (**Node.js, MongoDB, Express, ESP32**)
 
 ## Features
 
@@ -22,7 +19,7 @@ Integrating with **ESP32** and other IoT devices via **MQTT** and **WebSocket** 
 ![Devices](screenshots/devices.PNG)
 
 ### ESP32
-- Auto device registration
+- device registration
 - Deep sleep & power management
 - WiFi signal strength monitoring
 - Sensor calibration support
