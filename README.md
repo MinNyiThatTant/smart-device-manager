@@ -1,6 +1,6 @@
 # Smart IoT Device Manager
 
-This IoT device management platform built with **Node.js**, **Express**, and **MongoDB**. 
+Smart IoT Device Manager platform built with **Node.js**, **Express**, and **MongoDB**. 
 Integrating with **ESP32** and other IoT devices via **MQTT** and **WebSocket** protocols.
 
 ## Features
